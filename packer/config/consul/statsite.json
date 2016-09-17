@@ -1,0 +1,22 @@
+{
+  "service": {
+    "name": "statsite",
+    "port": 8125,
+    "checks": [
+      {
+        "id": "statsite-localhost",
+        "name": "Can connect on localhost:8125",
+        "tcp": "localhost:8125",
+        "interval": "10s",
+        "timeout": "1s"
+      },
+      {
+        "id": "statsite-local-ip",
+        "name": "Can connect on {{ local_ip }}:8125",
+        "tcp": "{{ local_ip }}:8125",
+        "interval": "10s",
+        "timeout": "1s"
+      }
+    ]
+  }
+}

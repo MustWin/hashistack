@@ -1,0 +1,13 @@
+{
+  "service": {
+    "name": "graphite",
+    "port": 80,
+    "check": {
+      "id": "graphite",
+      "name": "Running on port 80",
+      "http": "http://localhost:80",
+      "interval": "10s",
+      "timeout": "1s"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "server": true,
+  "bootstrap_expect": {{ bootstrap_expect }},
+  "statsite_addr": "statsite.service.consul:8125",
+  "statsite_prefix": "consul.consul_server",
+  "service": {
+    "name": "consul-server",
+    "tags": ["{{ tags }}"]
+  }
+}

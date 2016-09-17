@@ -1,0 +1,14 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "Node.js Application Counter",
+  "main": "index.js",
+  "author": "HashiCorp",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.12.3",
+    "hiredis": "^0.2.0",
+    "mocha": "^2.2.1",
+    "redis": "^0.12.1"
+  }
+}

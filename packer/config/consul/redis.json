@@ -1,0 +1,22 @@
+{
+  "service": {
+    "name": "redis",
+    "port": 6379,
+    "checks": [
+      {
+        "id": "redis-localhost",
+        "name": "Can connect on localhost:6379",
+        "tcp": "localhost:6379",
+        "interval": "10s",
+        "timeout": "1s"
+      },
+      {
+        "id": "redis-local-ip",
+        "name": "Can connect on {{ local_ip }}:6379",
+        "tcp": "{{ local_ip }}:6379",
+        "interval": "10s",
+        "timeout": "1s"
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "statsite_addr": "statsite.service.consul:8125",
+  "statsite_prefix": "consul.nomad_server",
+  "service": {
+    "name": "nomad-server",
+    "tags": ["{{ tags }}"],
+    "port": 4646,
+    "check": {
+      "id": "nomad-server",
+      "name": "Running on port 4646",
+      "tcp": "localhost:4646",
+      "interval": "10s",
+      "timeout": "1s"
+    }
+  }
+}

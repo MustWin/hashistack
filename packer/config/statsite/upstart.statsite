@@ -1,0 +1,33 @@
+description "Statsite agent"
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+# Respawn infinitely
+respawn limit unlimited
+
+console log
+
+nice -10
+limit nofile 65535 65535
+
+pre-start script
+  while [ ! -f /etc/statsite.d/configured ]
+  do
+    DT=$(date '+%Y/%m/%d %H:%M:%S')
+    echo "$DT: Waiting on configuration"
+    sleep 1
+  done
+end script
+
+script
+  if [ -f "/etc/service/statsite" ]; then
+    . /etc/service/statsite
+  fi
+
+  exec /usr/local/bin/statsite -f /etc/statsite.d/default.conf >>/var/log/statsite.log 2>&1
+end script
+
+post-start script
+  echo "statsite,$(hostname),$(date '+%s')" | sudo tee -a /home/ubuntu/c1m/spawn/spawn.csv
+end script

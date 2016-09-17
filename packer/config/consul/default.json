@@ -1,0 +1,18 @@
+{
+  "data_dir": "{{ data_dir }}",
+  "ui_dir": "/opt/consul/ui",
+  "client_addr": "0.0.0.0",
+  "bind_addr": "0.0.0.0",
+  "advertise_addr": "{{ local_ip }}",
+  "atlas_join": true,
+  "atlas_infrastructure": "{{ atlas_username }}/{{ atlas_environment }}",
+  "atlas_token": "{{ atlas_token }}",
+  "datacenter": "{{ datacenter }}",
+  "node_name": "{{ node_name }}",
+  "log_level": "{{ log_level }}",
+  "skip_leave_on_interrupt": true,
+  "leave_on_terminate": true,
+  "dns_config": {
+    "allow_stale": true
+  }
+}
