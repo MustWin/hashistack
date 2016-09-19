@@ -4,24 +4,12 @@
     "gce_project_id":   "{{env `GCE_PROJECT_ID`}}",
     "gce_zone":         "{{env `GCE_DEFAULT_ZONE`}}",
     "gce_source_image": "{{env `GCE_SOURCE_IMAGE`}}",
-    "gce_account_file": "account.json",
+    "gce_account_file": "gce-credentials.json",
     "name":             "c1m-nomad-client",
     "scripts_dir":      "packer/scripts",
     "config_dir":       "packer/config",
     "ssh_username":     "ubuntu",
     "dns_listen_addr":  "127.0.0.1"
-  },
-  "push": {
-    "name": "{{user `atlas_username`}}/{{user `name`}}",
-    "base_dir": "../.",
-    "include": [
-      "{{user `gce_account_file`}}",
-      "{{user `scripts_dir`}}/*",
-      "{{user `config_dir`}}/*",
-      "{{user `config_dir`}}/consul/*",
-      "{{user `config_dir`}}/nomad/*"
-    ],
-    "vcs": false
   },
   "builders": [
     {
@@ -76,17 +64,6 @@
         "sh /ops/{{user `scripts_dir`}}/results.sh",
         "sh /ops/{{user `scripts_dir`}}/cleanup.sh"
       ]
-    }
-  ],
-  "post-processors": [
-    {
-      "type": "atlas",
-      "artifact": "{{user `atlas_username`}}/{{user `name`}}",
-      "artifact_type": "google.image",
-      "metadata": {
-        "created_at": "{{timestamp}}",
-        "zone": "{{user `gce_zone`}}"
-      }
     }
   ]
 }

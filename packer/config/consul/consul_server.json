@@ -1,5 +1,6 @@
 {
   "server": true,
+  "retry_join": true,
   "bootstrap_expect": {{ bootstrap_expect }},
   "statsite_addr": "statsite.service.consul:8125",
   "statsite_prefix": "consul.consul_server",

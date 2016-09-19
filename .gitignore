@@ -1,1 +1,6 @@
 gce-credentials.json
+id_rsa
+id_rsa.pub
+terraform.tfvars
+terraform.tfstate
+.terraform

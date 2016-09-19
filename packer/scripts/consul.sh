@@ -11,7 +11,7 @@ logger "Executing"
 cd /tmp
 
 CONFIGDIR=/ops/$1/consul
-CONSULVERSION=0.6.4
+CONSULVERSION=0.7.0
 CONSULDOWNLOAD=https://releases.hashicorp.com/consul/${CONSULVERSION}/consul_${CONSULVERSION}_linux_amd64.zip
 CONSULWEBUI=https://releases.hashicorp.com/consul/${CONSULVERSION}/consul_${CONSULVERSION}_web_ui.zip
 CONSULCONFIGDIR=/etc/consul.d
