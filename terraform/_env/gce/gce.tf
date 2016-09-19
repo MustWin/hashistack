@@ -1,11 +1,9 @@
 variable "name"              { }
-variable "atlas_environment" { }
-variable "atlas_username"    { }
-variable "atlas_token"       { }
+variable "region"            { }
 variable "project_id"        { }
-variable "credentials"       { }
-variable "ssh_keys"          { }
-variable "private_key"       { }
+variable "credentials_file"  { }
+variable "public_key_file"   { }
+variable "private_key_file"  { }
 
 variable "artifact_type"    { default = "google.image" }
 variable "consul_log_level" { default = "INFO" }
@@ -39,28 +37,23 @@ variable "nomad_client_groups"    { default = "10" }
 variable "nomad_clients"          { default = "5000" }
 
 provider "google" {
-  credentials = "${var.credentials}"
-}
-
-atlas {
-  name = "${var.atlas_username}/${var.atlas_environment}"
+  region = "${var.region}"
+  project = "${var.project_id}"
+  credentials = "${file("${var.credentials_file}")}"
 }
 
 module "us_central1" {
   source = "../../gce/region"
 
-  name              = "${var.name}"
-  project_id        = "${var.project_id}"
-  credentials       = "${var.credentials}"
-  atlas_username    = "${var.atlas_username}"
-  atlas_environment = "${var.atlas_environment}"
-  atlas_token       = "${var.atlas_token}"
+  name            = "${var.name}"
+  project_id      = "${var.project_id}"
+  credentials     = "${file("${var.credentials_file}")}"
 
   region          = "${var.us_central1_region}"
   cidr            = "${var.us_central1_cidr}"
   zones           = "${var.us_central1_zones}"
-  ssh_keys        = "${var.ssh_keys}"
-  private_key     = "${var.private_key}"
+  ssh_keys        = "ubuntu:${file("${var.public_key_file}")}"
+  private_key     = "${file("${var.private_key_file}")}"
 
   artifact_type    = "${var.artifact_type}"
   consul_log_level = "${var.consul_log_level}"
@@ -92,4 +85,4 @@ module "us_central1" {
   nomad_clients                 = "${var.nomad_clients}"
 }
 
-output "us_central1_info" { value = "${module.us_central1.info}" }
+//  output "us_central1_info" { value = "${module.us_central1.info}" }

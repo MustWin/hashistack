@@ -1,10 +1,7 @@
 variable "name"              { default = "consul-server" }
 variable "project_id"        { }
-variable "credentials"       { }
-variable "atlas_username"    { }
-variable "atlas_environment" { }
-variable "atlas_token"       { }
 variable "region"            { }
+variable "credentials"  { }
 variable "network"           { default = "default" }
 variable "zones"             { }
 variable "image"             { }
@@ -15,8 +12,9 @@ variable "local_ssd_name"    { default = "local-ssd-0" }
 variable "consul_join_name"  { default = "consul-server?passing" }
 variable "servers"           { }
 variable "consul_log_level"  { }
-variable "ssh_keys"          { }
-variable "private_key"       { }
+variable "ssh_keys"      { }
+variable "private_key"   { }
+
 
 provider "google" {
   region      = "${var.region}"
@@ -34,11 +32,8 @@ resource "template_file" "consul_server" {
   count    = "${var.servers}"
 
   vars {
-    private_key       = "${var.private_key}"
+    private_key     = "${var.private_key}"
     data_dir          = "/opt"
-    atlas_username    = "${var.atlas_username}"
-    atlas_environment = "${var.atlas_environment}"
-    atlas_token       = "${var.atlas_token}"
     provider          = "gce"
     region            = "gce-${var.region}"
     datacenter        = "gce-${var.region}"
@@ -99,6 +94,35 @@ resource "google_compute_instance" "consul_server" {
   metadata_startup_script = "${element(template_file.consul_server.*.rendered, count.index % var.servers)}"
 }
 
+module "consul_cluster_join_template" {
+  source = "../../../templates/join"
+
+  service          = "consul_join"
+  consul_join_name = "${var.consul_join_name}"
+  consul_servers   = "${join(" ", google_compute_instance.consul_server.*.network_interface.0.address)}"
+}
+
+resource "null_resource" "consul_cluster_join" {
+  depends_on = ["google_compute_instance.consul_server"]
+
+  triggers {
+    private_ips = "${join(",", google_compute_instance.consul_server.*.network_interface.0.address)}"
+  }
+
+  connection {
+    user        = "ubuntu"
+    host        = "${google_compute_instance.consul_server.0.network_interface.0.access_config.0.assigned_nat_ip}"
+    private_key     = "${var.private_key}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "${module.consul_cluster_join_template.script}",
+    ]
+  }
+}
+
+
 module "redis_pq_template" {
   source = "../../../templates/pq"
 
@@ -114,7 +138,7 @@ module "nodejs_pq_template" {
 }
 
 resource "null_resource" "prepared_queries" {
-  depends_on = ["google_compute_instance.consul_server"]
+  depends_on = ["google_compute_instance.consul_server", "null_resource.consul_cluster_join"]
 
   triggers {
     private_ips = "${join(",", google_compute_instance.consul_server.*.network_interface.0.address)}"
@@ -123,7 +147,7 @@ resource "null_resource" "prepared_queries" {
   connection {
     user        = "ubuntu"
     host        = "${google_compute_instance.consul_server.0.network_interface.0.access_config.0.assigned_nat_ip}"
-    private_key = "${var.private_key}"
+    private_key     = "${var.private_key}"
   }
 
   provisioner "remote-exec" {

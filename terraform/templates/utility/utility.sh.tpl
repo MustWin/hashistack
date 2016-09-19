@@ -27,9 +27,6 @@ sudo mkdir -p $CONSUL_DATA_DIR
 sudo chmod 0755 $CONSUL_DATA_DIR
 
 sudo sed -i -- "s/{{ data_dir }}/$${CONSUL_DATA_DIR//\//\\\/}/g" $CONSUL_DEFAULT_CONFIG
-sudo sed -i -- "s/{{ atlas_username }}/${atlas_username}/g" $CONSUL_DEFAULT_CONFIG
-sudo sed -i -- "s/{{ atlas_environment }}/${atlas_environment}/g" $CONSUL_DEFAULT_CONFIG
-sudo sed -i -- "s/{{ atlas_token }}/${atlas_token}/g" $CONSUL_DEFAULT_CONFIG
 sudo sed -i -- "s/{{ datacenter }}/${datacenter}/g" $CONSUL_DEFAULT_CONFIG
 sudo sed -i -- "s/{{ node_name }}/$NODE_NAME/g" $CONSUL_DEFAULT_CONFIG
 sudo sed -i -- "s/{{ local_ip }}/$METADATA_LOCAL_IP/g" $CONSUL_DEFAULT_CONFIG

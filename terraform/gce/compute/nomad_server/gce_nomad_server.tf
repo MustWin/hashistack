@@ -1,9 +1,6 @@
 variable "name"              { default = "nomad-server" }
 variable "project_id"        { }
 variable "credentials"       { }
-variable "atlas_username"    { }
-variable "atlas_environment" { }
-variable "atlas_token"       { }
 variable "region"            { }
 variable "network"           { default = "default" }
 variable "zones"             { }
@@ -16,8 +13,8 @@ variable "servers"           { }
 variable "nomad_join_name"   { default = "nomad-server?passing" }
 variable "nomad_log_level"   { }
 variable "consul_log_level"  { }
-variable "ssh_keys"          { }
-variable "private_key"       { }
+variable "ssh_keys"   { }
+variable "private_key"  { }
 
 provider "google" {
   region      = "${var.region}"
@@ -37,9 +34,6 @@ resource "template_file" "nomad_server" {
   vars {
     private_key       = "${var.private_key}"
     data_dir          = "/opt"
-    atlas_username    = "${var.atlas_username}"
-    atlas_environment = "${var.atlas_environment}"
-    atlas_token       = "${var.atlas_token}"
     provider          = "gce"
     region            = "gce-${var.region}"
     datacenter        = "gce-${var.region}"
@@ -96,7 +90,7 @@ resource "google_compute_instance" "nomad_server" {
   }
 
   metadata {
-    sshKeys = "${var.ssh_keys}"
+    sshKeys        = "${var.ssh_keys}"
   }
 
   metadata_startup_script = "${element(template_file.nomad_server.*.rendered, count.index % var.servers)}"

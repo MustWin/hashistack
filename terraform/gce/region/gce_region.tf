@@ -1,20 +1,18 @@
 variable "name"              { }
 variable "project_id"        { }
-variable "credentials"       { }
-variable "atlas_username"    { }
-variable "atlas_environment" { }
-variable "atlas_token"       { }
+variable "credentials"  { }
 
 variable "region"      { }
 variable "cidr"        { }
 variable "zones"       { }
-variable "ssh_keys"    { }
+variable "ssh_keys" { }
 variable "private_key" { }
 
 variable "artifact_type"    { default = "google.image" }
 variable "consul_log_level" { }
 variable "nomad_log_level"  { }
 variable "node_classes"     { }
+variable "artifact_prefix"  { default = "packer" }
 
 variable "utility_artifact_name"    { }
 variable "utility_artifact_version" { default = "latest" }
@@ -40,35 +38,18 @@ variable "nomad_client_disk"             { }
 variable "nomad_client_groups"           { }
 variable "nomad_clients"                 { }
 
+provider "google" {
+  region      = "${var.region}"
+  alias       = "${var.region}"
+  project     = "${var.project_id}"
+  credentials = "${var.credentials}"
+}
+
 module "network" {
   source = "../network"
 
   name = "${var.name}"
   cidr = "${var.cidr}"
-}
-
-resource "atlas_artifact" "utility" {
-  name    = "${var.atlas_username}/${var.utility_artifact_name}"
-  type    = "${var.artifact_type}"
-  version = "${var.utility_artifact_version}"
-}
-
-resource "atlas_artifact" "consul_server" {
-  name    = "${var.atlas_username}/${var.consul_server_artifact_name}"
-  type    = "${var.artifact_type}"
-  version = "${var.consul_server_artifact_version}"
-}
-
-resource "atlas_artifact" "nomad_server" {
-  name    = "${var.atlas_username}/${var.nomad_server_artifact_name}"
-  type    = "${var.artifact_type}"
-  version = "${var.nomad_server_artifact_version}"
-}
-
-resource "atlas_artifact" "nomad_client" {
-  name    = "${var.atlas_username}/${var.nomad_client_artifact_name}"
-  type    = "${var.artifact_type}"
-  version = "${var.nomad_client_artifact_version}"
 }
 
 module "compute" {
@@ -77,9 +58,6 @@ module "compute" {
   name              = "${var.name}"
   project_id        = "${var.project_id}"
   credentials       = "${var.credentials}"
-  atlas_username    = "${var.atlas_username}"
-  atlas_environment = "${var.atlas_environment}"
-  atlas_token       = "${var.atlas_token}"
   region            = "${var.region}"
   network           = "${module.network.name}"
   zones             = "${var.zones}"
@@ -89,27 +67,27 @@ module "compute" {
   ssh_keys          = "${var.ssh_keys}"
   private_key       = "${var.private_key}"
 
-  utility_image   = "${atlas_artifact.utility.id}"
+  utility_image   = "${var.artifact_prefix}-${var.utility_artifact_name}-${var.utility_artifact_version}"
   utility_machine = "${var.utility_machine}"
   utility_disk    = "${var.utility_disk}"
 
-  consul_server_image   = "${atlas_artifact.consul_server.id}"
+  consul_server_image   = "${var.artifact_prefix}-${var.consul_server_artifact_name}-${var.consul_server_artifact_version}"
   consul_server_machine = "${var.consul_server_machine}"
   consul_server_disk    = "${var.consul_server_disk}"
   consul_servers        = "${var.consul_servers}"
 
-  nomad_server_image   = "${atlas_artifact.nomad_server.id}"
+  nomad_server_image   = "${var.artifact_prefix}-${var.nomad_server_artifact_name}-${var.nomad_server_artifact_version}"
   nomad_server_machine = "${var.nomad_server_machine}"
   nomad_server_disk    = "${var.nomad_server_disk}"
   nomad_servers        = "${var.nomad_servers}"
 
-  nomad_client_image   = "${atlas_artifact.nomad_client.id}"
+  nomad_client_image   = "${var.artifact_prefix}-${var.nomad_client_artifact_name}-${var.nomad_client_artifact_version}"
   nomad_client_machine = "${var.nomad_client_machine}"
   nomad_client_disk    = "${var.nomad_client_disk}"
   nomad_client_groups  = "${var.nomad_client_groups}"
   nomad_clients        = "${var.nomad_clients}"
 }
-
+/*
 output "region"   { value = "${var.region}" }
 output "network"  { value = "${module.network.name}" }
 output "vpc_cidr" { value = "${module.network.vpc_cidr}" }
@@ -150,4 +128,6 @@ consul dns:
         ${var.nomad_client_machine}.nomad-client.service.consul
         NODE_CLASS.nomad-client.service.consul
 INFO
+
 }
+*/

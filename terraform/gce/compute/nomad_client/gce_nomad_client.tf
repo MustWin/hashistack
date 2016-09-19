@@ -1,9 +1,6 @@
 variable "name"              { default = "nomad-client" }
 variable "project_id"        { }
 variable "credentials"       { }
-variable "atlas_username"    { }
-variable "atlas_environment" { }
-variable "atlas_token"       { }
 variable "region"            { }
 variable "network"           { default = "default" }
 variable "zones"             { }
@@ -12,13 +9,13 @@ variable "machine_type"      { }
 variable "disk_size"         { default = "10" }
 variable "mount_dir"         { default = "/mnt/ssd0" }
 variable "local_ssd_name"    { default = "local-ssd-0" }
-variable "clients"           { }
+variable "nomad_clients"     { }
 variable "node_classes"      { }
 variable "nomad_join_name"   { default = "nomad-server?passing" }
 variable "nomad_log_level"   { }
 variable "consul_log_level"  { }
-variable "ssh_keys"          { }
-variable "private_key"       { }
+variable "ssh_keys"   { }
+variable "private_key"  { }
 
 provider "google" {
   region      = "${var.region}"
@@ -38,9 +35,6 @@ resource "template_file" "nomad_client" {
   vars {
     private_key       = "${var.private_key}"
     data_dir          = "/opt"
-    atlas_username    = "${var.atlas_username}"
-    atlas_environment = "${var.atlas_environment}"
-    atlas_token       = "${var.atlas_token}"
     provider          = "gce"
     region            = "gce-${var.region}"
     datacenter        = "gce-${var.region}"
@@ -63,7 +57,7 @@ module "mount_ssd_template" {
 
 resource "google_compute_instance" "nomad_client" {
   provider     = "google.${var.region}"
-  count        = "${var.clients}"
+  count        = "${var.nomad_clients}"
   name         = "${var.name}-${element(split(",", var.zones), (count.index % var.node_classes) % (length(split(",", var.zones))))}-${var.machine_type}-${count.index + 1}"
   machine_type = "${var.machine_type}"
   zone         = "${element(split(",", var.zones), (count.index % var.node_classes) % (length(split(",", var.zones))))}"
@@ -98,7 +92,7 @@ resource "google_compute_instance" "nomad_client" {
   }
 
   metadata {
-    sshKeys = "${var.ssh_keys}"
+    sshKeys        = "${var.ssh_keys}"
   }
 
   metadata_startup_script = "${element(template_file.nomad_client.*.rendered, count.index % var.node_classes)}"
