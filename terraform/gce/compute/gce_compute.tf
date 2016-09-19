@@ -67,7 +67,7 @@ module "consul_servers" {
   ssh_keys        = "${var.ssh_keys}"
   private_key     = "${var.private_key}"
 }
-/*
+
 module "nomad_servers" {
   source = "./nomad_server"
 
@@ -123,4 +123,3 @@ output "nomad_server_names"         { value = "${module.nomad_servers.names}" }
 output "nomad_server_machine_types" { value = "${module.nomad_servers.machine_types}" }
 output "nomad_server_private_ips"   { value = "${module.nomad_servers.private_ips}" }
 output "nomad_server_public_ips"    { value = "${module.nomad_servers.public_ips}" }
-*/

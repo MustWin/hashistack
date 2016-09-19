@@ -87,7 +87,7 @@ module "compute" {
   nomad_client_groups  = "${var.nomad_client_groups}"
   nomad_clients        = "${var.nomad_clients}"
 }
-/*
+
 output "region"   { value = "${var.region}" }
 output "network"  { value = "${module.network.name}" }
 output "vpc_cidr" { value = "${module.network.vpc_cidr}" }
@@ -130,4 +130,3 @@ consul dns:
 INFO
 
 }
-*/
