@@ -1,16 +1,16 @@
 #!/bin/bash
-set -e
 
 logger() {
   DT=$(date '+%Y/%m/%d %H:%M:%S')
-  echo "$DT pq.sh: $1"
-  echo "$DT pq.sh: $1" | sudo tee -a /var/log/user_data.log > /dev/null
+  echo "$DT join.sh: $1"
+  echo "$DT join.sh: $1" | sudo tee -a /var/log/user_data.log > /dev/null
 }
 
 logger "Begin script"
 
 logger "running: consul join ${consul_servers}"
 
+set +e        # Don't exit on errors while we wait for consul to start
 consul join ${consul_servers}
 retval=$?
 SLEEPTIME=1
@@ -26,6 +26,7 @@ while [ $retval -ne 0 ]; do
       retval=$?
     fi
 done
+set -e
 
 echo "Join succeeded, waiting for peers..."
 
