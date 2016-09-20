@@ -15,15 +15,17 @@ CONFIGDIR=/ops/$1/statsite
 STATSITECONFIGDIR=/etc/statsite.d
 
 logger "Install statsite dependencies"
-apt-get -y install git build-essential scons
+apt-get -y install git build-essential scons autoconf libtool
 
 logger "Fetching statsite"
 git clone --depth 1 https://github.com/armon/statsite.git
 
 logger "Installing statsite"
 cd statsite
+./bootstrap.sh
+./configure
 make
-cp statsite /usr/local/bin/.
+cp src/statsite /usr/local/bin/.
 chmod 0755 /usr/local/bin/statsite
 chown root:root /usr/local/bin/statsite
 

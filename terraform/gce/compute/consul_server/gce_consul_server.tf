@@ -59,6 +59,9 @@ resource "google_compute_instance" "consul_server" {
   zone         = "${element(split(",", var.zones), count.index % length(split(",", var.zones)))}"
   count        = "${var.servers}"
 
+  # Used for dependency management
+  #output "name" { value = "${var.name}-${element(split(",", var.zones), count.index % length(split(",", var.zones)))}-${var.machine_type}-${count.index + 1}" }
+
   tags = [
     "${var.name}-${element(split(",", var.zones), count.index % length(split(",", var.zones)))}-${count.index + 1}",
     "${var.name}",
@@ -97,31 +100,8 @@ resource "google_compute_instance" "consul_server" {
 module "consul_cluster_join_template" {
   source = "../../../templates/join"
 
-  service          = "consul_join"
-  consul_join_name = "${var.consul_join_name}"
   consul_servers   = "${join(" ", google_compute_instance.consul_server.*.network_interface.0.address)}"
 }
-
-resource "null_resource" "consul_cluster_join" {
-  depends_on = ["google_compute_instance.consul_server"]
-
-  triggers {
-    private_ips = "${join(",", google_compute_instance.consul_server.*.network_interface.0.address)}"
-  }
-
-  connection {
-    user        = "ubuntu"
-    host        = "${google_compute_instance.consul_server.0.network_interface.0.access_config.0.assigned_nat_ip}"
-    private_key     = "${var.private_key}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "${module.consul_cluster_join_template.script}",
-    ]
-  }
-}
-
 
 module "redis_pq_template" {
   source = "../../../templates/pq"
@@ -137,8 +117,8 @@ module "nodejs_pq_template" {
   consul_join_name = "${var.consul_join_name}"
 }
 
-resource "null_resource" "prepared_queries" {
-  depends_on = ["google_compute_instance.consul_server", "null_resource.consul_cluster_join"]
+resource "null_resource" "join_and_prepared_queries" {
+  depends_on = ["google_compute_instance.consul_server"]
 
   triggers {
     private_ips = "${join(",", google_compute_instance.consul_server.*.network_interface.0.address)}"
@@ -152,6 +132,7 @@ resource "null_resource" "prepared_queries" {
 
   provisioner "remote-exec" {
     inline = [
+      "${module.consul_cluster_join_template.script}",
       "${module.redis_pq_template.script}",
       "${module.nodejs_pq_template.script}",
     ]
@@ -160,5 +141,5 @@ resource "null_resource" "prepared_queries" {
 
 output "names"         { value = "${join(",", google_compute_instance.consul_server.*.name)}" }
 output "machine_types" { value = "${join(",", google_compute_instance.consul_server.*.machine_type)}" }
-output "private_ips"   { value = "${join(",", google_compute_instance.consul_server.*.network_interface.0.address)}" }
+output "private_ips"   { value = "${join(" ", google_compute_instance.consul_server.*.network_interface.0.address)}" }
 output "public_ips"    { value = "${join(",", google_compute_instance.consul_server.*.network_interface.0.access_config.0.assigned_nat_ip)}" }

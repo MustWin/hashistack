@@ -15,6 +15,7 @@ variable "nomad_log_level"   { }
 variable "consul_log_level"  { }
 variable "ssh_keys"   { }
 variable "private_key"  { }
+variable "consul_servers"    { }
 
 provider "google" {
   region      = "${var.region}"
@@ -45,6 +46,12 @@ resource "template_file" "nomad_server" {
     consul_log_level  = "${var.consul_log_level}"
     local_ip_url      = "-H \"Metadata-Flavor: Google\" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip"
   }
+}
+
+module "consul_cluster_join_template" {
+  source = "../../../templates/join"
+
+  consul_servers   = "${var.consul_servers}"
 }
 
 module "mount_ssd_template" {
@@ -94,6 +101,26 @@ resource "google_compute_instance" "nomad_server" {
   }
 
   metadata_startup_script = "${element(template_file.nomad_server.*.rendered, count.index % var.servers)}"
+
+  provisioner "remote-exec" {
+    connection {
+      user          = "ubuntu"
+      private_key   = "${var.private_key}"
+    }
+    inline = [
+      "${module.consul_cluster_join_template.script}",
+    ]
+  }
+
+  provisioner "file" {
+    source = "${module.nomad_jobs.redis_job}"
+    destination = "/opt/nomad/jobs/redis.nomad"
+  }
+
+  provisioner "file" {
+    source = "${module.nomad_jobs.helloworld_job}"
+    destination = "/opt/nomad/jobs/redis.nomad"
+  }
 }
 
 module "nomad_jobs" {
@@ -101,33 +128,8 @@ module "nomad_jobs" {
 
   region            = "gce-${var.region}"
   datacenter        = "gce-${var.region}"
-  classlogger_image = "hashicorp/nomad-c1m:0.1"
-  redis_count       = "1"
-  redis_image       = "hashidemo/redis:latest"
-  nginx_count       = "1"
-  nginx_image       = "hashidemo/nginx:latest"
-  nodejs_count      = "3"
-  nodejs_image      = "hashidemo/nodejs:latest"
 }
 
-resource "null_resource" "nomad_jobs" {
-  depends_on = ["google_compute_instance.nomad_server"]
-  count      = "${var.servers}"
-
-  triggers {
-    private_ips = "${join(",", google_compute_instance.nomad_server.*.network_interface.0.address)}"
-  }
-
-  connection {
-    user        = "ubuntu"
-    host        = "${element(google_compute_instance.nomad_server.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
-    private_key = "${var.private_key}"
-  }
-
-  provisioner "remote-exec" {
-    inline = "${module.nomad_jobs.cmd}"
-  }
-}
 
 output "names"         { value = "${join(",", google_compute_instance.nomad_server.*.name)}" }
 output "machine_types" { value = "${join(",", google_compute_instance.nomad_server.*.machine_type)}" }

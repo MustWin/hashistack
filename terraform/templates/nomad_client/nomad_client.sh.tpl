@@ -41,6 +41,10 @@ sudo sed -i -- "s/\"{{ tags }}\"/\"${provider}\", \"${region}\", \"${zone}\", \"
 echo $(date '+%s') | sudo tee -a /etc/consul.d/configured > /dev/null
 sudo service consul start || sudo service consul restart
 
+logger "Running Join Script"
+
+${ consul_join_script }
+
 logger "Configuring Docker"
 DOCKER_DATA_DIR=${data_dir}/docker/data
 
@@ -50,10 +54,6 @@ sudo chmod 0755 $DOCKER_DATA_DIR
 sudo sed -i -- "s/service.consul/service.consul -g $${DOCKER_DATA_DIR//\//\\\/}/g" /etc/default/docker
 
 sudo service docker restart
-
-logger "Seed Docker image"
-sleep 10 # Wait for Docker to restart
-sudo docker build -t hashicorp/nomad-c1m:0.1 /opt/go/src/github.com/hashicorp/c1m/schedbench/tests/nomad
 
 logger "Configuring Nomad default"
 NOMAD_DEFAULT_CONFIG=/etc/nomad.d/default.hcl

@@ -10,8 +10,9 @@ variable "disk_size"         { default = "10" }
 variable "mount_dir"         { default = "/mnt/ssd0" }
 variable "local_ssd_name"    { default = "local-ssd-0" }
 variable "consul_log_level"  { }
-variable "ssh_keys"   { }
-variable "private_key"  { }
+variable "ssh_keys"          { }
+variable "private_key"       { }
+variable "consul_servers"    { }
 
 provider "google" {
   region      = "${var.region}"
@@ -45,6 +46,12 @@ module "mount_ssd_template" {
 
   mount_dir      = "${var.mount_dir}"
   local_ssd_name = "google-${var.local_ssd_name}"
+}
+
+module "consul_cluster_join_template" {
+  source = "../../../templates/join"
+
+  consul_servers   = "${var.consul_servers}"
 }
 
 resource "google_compute_instance" "utility" {
@@ -86,6 +93,16 @@ resource "google_compute_instance" "utility" {
   }
 
   metadata_startup_script = "${template_file.utility.rendered}"
+
+  provisioner "remote-exec" {
+    connection {
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
+    }
+    inline = [
+      "${module.consul_cluster_join_template.script}",
+    ]
+  }
 }
 
 resource "google_compute_firewall" "allow-http" {

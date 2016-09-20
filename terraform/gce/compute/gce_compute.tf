@@ -32,6 +32,25 @@ variable "nomad_client_groups"  { }
 variable "nomad_clients"        { }
 
 
+module "consul_servers" {
+  source = "./consul_server"
+
+  name              = "${var.name}-consul-server"
+  project_id        = "${var.project_id}"
+  credentials       = "${var.credentials}"
+  region            = "${var.region}"
+  network           = "${var.network}"
+  zones             = "${var.zones}"
+  image             = "${var.consul_server_image}"
+  machine_type      = "${var.consul_server_machine}"
+  disk_size         = "${var.consul_server_disk}"
+  servers           = "${var.consul_servers}"
+  consul_log_level  = "${var.consul_log_level}"
+  ssh_keys          = "${var.ssh_keys}"
+  private_key       = "${var.private_key}"
+}
+
+
 module "utility" {
   source = "./utility"
 
@@ -47,26 +66,10 @@ module "utility" {
   consul_log_level  = "${var.consul_log_level}"
   ssh_keys        = "${var.ssh_keys}"
   private_key     = "${var.private_key}"
+  consul_servers  = "${module.consul_servers.private_ips}"
 }
 
 
-module "consul_servers" {
-  source = "./consul_server"
-
-  name              = "${var.name}-consul-server"
-  project_id        = "${var.project_id}"
-  credentials       = "${var.credentials}"
-  region            = "${var.region}"
-  network           = "${var.network}"
-  zones             = "${var.zones}"
-  image             = "${var.consul_server_image}"
-  machine_type      = "${var.consul_server_machine}"
-  disk_size         = "${var.consul_server_disk}"
-  servers           = "${var.consul_servers}"
-  consul_log_level  = "${var.consul_log_level}"
-  ssh_keys        = "${var.ssh_keys}"
-  private_key     = "${var.private_key}"
-}
 
 module "nomad_servers" {
   source = "./nomad_server"
@@ -85,8 +88,33 @@ module "nomad_servers" {
   consul_log_level  = "${var.consul_log_level}"
   ssh_keys        = "${var.ssh_keys}"
   private_key     = "${var.private_key}"
+  consul_servers  = "${module.consul_servers.private_ips}"
 }
+/* // Raw Nodes
+module "nomad_client" {
+  source = "./nomad_client"
 
+  name              = "${var.name}-nomad-client"
+  project_id        = "${var.project_id}"
+  credentials       = "${var.credentials}"
+  region            = "${var.region}"
+  network           = "${var.network}"
+  zones             = "${var.zones}"
+  image             = "${var.nomad_client_image}"
+  machine_type      = "${var.nomad_client_machine}"
+  disk_size         = "${var.nomad_client_disk}"
+  #groups            = "${var.nomad_client_groups}"
+  nomad_clients     = "${var.nomad_clients}"
+  node_classes      = "${var.node_classes}"
+  nomad_log_level   = "${var.nomad_log_level}"
+  consul_log_level  = "${var.consul_log_level}"
+  ssh_keys        = "${var.ssh_keys}"
+  private_key     = "${var.private_key}"
+  consul_servers  = "${module.consul_servers.private_ips}"
+}
+*/
+
+// IGM Nodes
 module "nomad_clients_igm" {
   source = "./nomad_client_igm"
 
@@ -104,10 +132,10 @@ module "nomad_clients_igm" {
   node_classes      = "${var.node_classes}"
   nomad_log_level   = "${var.nomad_log_level}"
   consul_log_level  = "${var.consul_log_level}"
-  ssh_keys        = "${var.ssh_keys}"
-  private_key     = "${var.private_key}"
+  ssh_keys          = "${var.ssh_keys}"
+  private_key       = "${var.private_key}"
+  consul_servers    = "${module.consul_servers.private_ips}"
 }
-
 
 output "utility_name"         { value = "${module.utility.name}" }
 output "utility_machine_type" { value = "${module.utility.machine_type}" }

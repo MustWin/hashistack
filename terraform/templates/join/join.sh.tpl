@@ -31,7 +31,7 @@ set -e
 echo "Join succeeded, waiting for peers..."
 
 SLEEPTIME=1
-CONSUL_PEERS=`consul info | grep num_peers | cut -c 14-`
+CONSUL_PEERS=`consul info | egrep "known_servers|num_peers" | tr ' ' '\n' | tail -n 1`
 while [ $CONSUL_PEERS -lt 2 ]
 do
   if [ $SLEEPTIME -gt 15 ]; then
@@ -41,7 +41,7 @@ do
     logger "Waiting for optimum quorum size, currently: $CONSUL_PEERS, waiting $SLEEPTIME seconds"
     sleep $SLEEPTIME
     SLEEPTIME=$((SLEEPTIME + 1))
-    CONSUL_PEERS=`consul info | grep num_peers | cut -c 14-`
+    CONSUL_PEERS=`consul info | egrep "known_servers|num_peers" | tr ' ' '\n' | tail -n 1`
   fi
 done
 

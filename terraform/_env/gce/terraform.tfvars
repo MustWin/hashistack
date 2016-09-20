@@ -12,13 +12,13 @@ node_classes     = "5" # Number of node_classes we will be using for the challen
 
 artifact_prefix                = "packer"
 utility_artifact_name          = "c1m-utility"
-utility_artifact_version       = "1474273660"
+utility_artifact_version       = "1474324714"
 consul_server_artifact_name    = "c1m-consul-server"
 consul_server_artifact_version = "1474270605"
 nomad_server_artifact_name     = "c1m-nomad-server"
-nomad_server_artifact_version  = "1474273548"
+nomad_server_artifact_version  = "1474328142"
 nomad_client_artifact_name     = "c1m-nomad-client"
-nomad_client_artifact_version  = "1474273533"
+nomad_client_artifact_version  = "1474390524"
 
 us_central1_cidr  = "10.140.0.0/16"
 us_central1_zones = "us-central1-b" # ,us-central1-c,us-central1-f" # us-central1-a doesn't have n1_standard_32

@@ -17,12 +17,19 @@ variable "nomad_log_level"   { }
 variable "consul_log_level"  { }
 variable "ssh_keys"     { }
 variable "private_key"  { }
+variable "consul_servers"    { }
 
 provider "google" {
   region      = "${var.region}"
   alias       = "${var.region}"
   project     = "${var.project_id}"
   credentials = "${var.credentials}"
+}
+
+module "consul_cluster_join_template" {
+  source = "../../../templates/join"
+
+  consul_servers   = "${var.consul_servers}"
 }
 
 module "nomad_client_template" {
@@ -34,6 +41,7 @@ resource "template_file" "nomad_client_igm" {
   count    = "${var.groups}"
 
   vars {
+    consul_join_script = "${module.consul_cluster_join_template.script}"
     private_key       = "${var.private_key}"
     data_dir          = "/opt"
     provider          = "gce"

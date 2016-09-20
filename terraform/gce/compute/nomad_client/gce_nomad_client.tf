@@ -16,6 +16,7 @@ variable "nomad_log_level"   { }
 variable "consul_log_level"  { }
 variable "ssh_keys"   { }
 variable "private_key"  { }
+variable "consul_servers"    { }
 
 provider "google" {
   region      = "${var.region}"
@@ -26,6 +27,12 @@ provider "google" {
 
 module "nomad_client_template" {
   source = "../../../templates/nomad_client"
+}
+
+module "consul_cluster_join_template" {
+  source = "../../../templates/join"
+
+  consul_servers   = "${var.consul_servers}"
 }
 
 resource "template_file" "nomad_client" {
@@ -45,8 +52,10 @@ resource "template_file" "nomad_client" {
     nomad_log_level   = "${var.nomad_log_level}"
     consul_log_level  = "${var.consul_log_level}"
     local_ip_url      = "-H \"Metadata-Flavor: Google\" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip"
+    consul_join_script = "${module.consul_cluster_join_template.script}"
   }
 }
+output "script" { value = "${template_file.nomad_client.rendered}" }
 
 module "mount_ssd_template" {
   source = "../../../templates/mount_ssd"
@@ -57,7 +66,7 @@ module "mount_ssd_template" {
 
 resource "google_compute_instance" "nomad_client" {
   provider     = "google.${var.region}"
-  count        = "${var.nomad_clients}"
+  count        = ${var.nomad_clients}"
   name         = "${var.name}-${element(split(",", var.zones), (count.index % var.node_classes) % (length(split(",", var.zones))))}-${var.machine_type}-${count.index + 1}"
   machine_type = "${var.machine_type}"
   zone         = "${element(split(",", var.zones), (count.index % var.node_classes) % (length(split(",", var.zones))))}"
@@ -94,6 +103,5 @@ resource "google_compute_instance" "nomad_client" {
   metadata {
     sshKeys        = "${var.ssh_keys}"
   }
-
   metadata_startup_script = "${element(template_file.nomad_client.*.rendered, count.index % var.node_classes)}"
 }
