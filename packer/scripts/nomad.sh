@@ -11,7 +11,7 @@ logger "Executing"
 cd /tmp
 
 CONFIGDIR=/ops/$1/nomad
-NOMADVERSION=0.4.0
+NOMADVERSION=0.4.1
 NOMADDOWNLOAD=https://releases.hashicorp.com/nomad/${NOMADVERSION}/nomad_${NOMADVERSION}_linux_amd64.zip
 NOMADCONFIGDIR=/etc/nomad.d
 NOMADDIR=/opt/nomad

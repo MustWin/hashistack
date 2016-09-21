@@ -53,6 +53,7 @@
       "execute_command": "echo {{user `ssh_username`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "inline": [
         "sh /ops/{{user `scripts_dir`}}/dependencies.sh",
+        "sh /ops/{{user `scripts_dir`}}/java8.sh",
         "sh /ops/{{user `scripts_dir`}}/go.sh",
         "sh /ops/{{user `scripts_dir`}}/collectd.sh",
         "sh /ops/{{user `scripts_dir`}}/docker.sh {{user `ssh_username`}}",
