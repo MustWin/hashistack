@@ -111,25 +111,7 @@ resource "google_compute_instance" "nomad_server" {
       "${module.consul_cluster_join_template.script}",
     ]
   }
-
-  provisioner "file" {
-    source = "${module.nomad_jobs.redis_job}"
-    destination = "/opt/nomad/jobs/redis.nomad"
-  }
-
-  provisioner "file" {
-    source = "${module.nomad_jobs.helloworld_job}"
-    destination = "/opt/nomad/jobs/redis.nomad"
-  }
 }
-
-module "nomad_jobs" {
-  source = "../../../templates/nomad_job"
-
-  region            = "gce-${var.region}"
-  datacenter        = "gce-${var.region}"
-}
-
 
 output "names"         { value = "${join(",", google_compute_instance.nomad_server.*.name)}" }
 output "machine_types" { value = "${join(",", google_compute_instance.nomad_server.*.machine_type)}" }

@@ -12,20 +12,22 @@ nice -10
 limit nofile 65535 65535
 
 pre-start script
+  exec 2>>/dev/.initramfs/haproxy-template.log
+  set -x
   # The default config has no listen line
-  grep listen /etc/haproxy/haproxy.cfg
-  retval=$?
-  while [ $retval -ne 0 ]
+  count=`grep listen /etc/haproxy/haproxy.cfg | wc -l`
+  while [ $count -lt 1 ]
   do
     DT=$(date '+%Y/%m/%d %H:%M:%S')
     echo "$DT: Waiting on configuration"
     sleep 1
-    grep listen /etc/haproxy/haproxy.cfg
-    retval=$?
+    count=`grep listen /etc/haproxy/haproxy.cfg | wc -l`
   done
 end script
 
 script
+  exec 2>>/dev/.initramfs/haproxy-template.log
+  set -x
   if [ -f "/etc/service/haproxy" ]; then
     . /etc/service/haproxy
   fi

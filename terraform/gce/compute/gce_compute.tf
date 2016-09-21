@@ -50,7 +50,6 @@ module "consul_servers" {
   private_key       = "${var.private_key}"
 }
 
-/*
 module "utility" {
   source = "./utility"
 
@@ -88,9 +87,8 @@ module "nomad_servers" {
   private_key     = "${var.private_key}"
   consul_servers  = "${module.consul_servers.private_ips}"
 }
-*/
 
-/*
+
 // Raw Nodes
 module "nomad_client" {
   source = "./nomad_client"
@@ -113,7 +111,6 @@ module "nomad_client" {
   private_key     = "${var.private_key}"
   consul_servers  = "${module.consul_servers.private_ips}"
 }
-*/
 
 /*
 // IGM Nodes

@@ -26,6 +26,8 @@ listen stats :81
 
 listen tcp-in
     mode tcp
-    bind *:80{{range $tag, $services := services | byTag}}
-    {{range $services}}{{ if .Tags | contains "routed" }}{{if eq .Status "passing"}}server {{.Name}} {{.Address}}:{{.Port}}{{ end }}{{ end }}
-    {{end}}{{end}}
+    balance roundrobin
+    bind *:80
+    {{range $tag, $services := services | byTag}}{{if eq $tag "routed"}}{{range $service := $services}}{{range serv
+ice $service.Name}}server {{.Name}}.service {{.Address}}:{{.Port}}
+    {{end}}{{end}}{{end}}{{end}}

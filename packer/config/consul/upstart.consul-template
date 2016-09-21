@@ -12,18 +12,25 @@ nice -10
 limit nofile 65535 65535
 
 pre-start script
-  while [ ! -f /etc/consul-template.d/consul-template.hcl ]
+  exec 2>>/dev/.initramfs/consul-template.log
+  set -x
+
+  count=`consul members | grep server | wc -l`
+  while [ $count -lt 1  ]
   do
     DT=$(date '+%Y/%m/%d %H:%M:%S')
     echo "$DT: Waiting on configuration"
     sleep 1
+    count=`consul members | grep server | wc -l`
   done
 end script
 
 script
+  exec 2>>/dev/.initramfs/consul-template.log
+  set -x
   if [ -f "/etc/service/consul-template" ]; then
     . /etc/service/consul-template
   fi
 
-  exec /usr/local/bin/consul-template --config /etc/consul-template.d/consul-template.hcl >>/var/log/consul-template.log 2>&1
+  exec /usr/local/bin/consul-template -log-level debug -config /etc/consul-template.d/consul-template.hcl >>/var/log/consul-template.log 2>&1
 end script

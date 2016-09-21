@@ -66,7 +66,7 @@ module "mount_ssd_template" {
 
 resource "google_compute_instance" "nomad_client" {
   provider     = "google.${var.region}"
-  count        = ${var.nomad_clients}"
+  count        = "${var.nomad_clients}"
   name         = "${var.name}-${element(split(",", var.zones), (count.index % var.node_classes) % (length(split(",", var.zones))))}-${var.machine_type}-${count.index + 1}"
   machine_type = "${var.machine_type}"
   zone         = "${element(split(",", var.zones), (count.index % var.node_classes) % (length(split(",", var.zones))))}"

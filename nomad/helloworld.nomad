@@ -42,7 +42,7 @@ job "helloworld-v1" {
 
       service {
         name = "helloworld"
-        tags = ["global", "us-central1"]
+        tags = ["global", "us-central1", "routed"]
         port = "http"
 
         check {
