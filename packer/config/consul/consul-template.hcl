@@ -209,7 +209,7 @@ template {
   // command will only run if the resulting template changes. The command must
   // return within 30s (configurable), and it must have a successful exit code.
   // Consul Template is not a replacement for a process monitor or init system.
-  command = "service haproxy reload || true"
+  command = "/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -p /var/run/haproxy.pid -sf $(cat /var/run/haproxy.pid || "") || true"
 
   // This is the maximum amount of time to wait for the optional command to
   // return. Default is 30s.

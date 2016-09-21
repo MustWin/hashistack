@@ -32,5 +32,5 @@ script
     . /etc/service/haproxy
   fi
 
-  exec /usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg  >>/var/log/haproxy.log 2>&1
+  exec /usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -p /var/run/haproxy.pid  >>/var/log/haproxy.log 2>&1
 end script
