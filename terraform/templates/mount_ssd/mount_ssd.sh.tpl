@@ -22,7 +22,6 @@ echo "tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0" | sudo tee -a /etc/fstab
 
 if [ ! -f /home/ubuntu/c1m/reboot ]; then
   logger "Local SSD reboot"
-  echo $(date '+%s') | sudo tee -a /home/ubuntu/c1m/reboot > /dev/null
   sudo reboot
   exit 0
 fi

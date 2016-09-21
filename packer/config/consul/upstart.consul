@@ -32,11 +32,4 @@ script
 end script
 
 post-start script
-  echo "consul,$(hostname),$(date '+%s')" | sudo tee -a /home/ubuntu/c1m/spawn/spawn.csv
-  if [ -f /etc/consul.d/gce-init.sh ]; then
-    sh /etc/consul.d/gce-init.sh
-  elsif [ -f /etc/consul.d/aws-init.sh ]; then
-    echo "AWS INIT BY METADATA IS NOT YET IMPLEMENTED"
-    exit 1
-  fi
 end script

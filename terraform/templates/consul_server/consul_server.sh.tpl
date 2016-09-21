@@ -9,10 +9,6 @@ logger() {
 
 logger "Begin script"
 
-logger "Setting private key"
-echo "${private_key}" | sudo tee /home/ubuntu/c1m/site.pem > /dev/null
-sudo chmod 400 /home/ubuntu/c1m/site.pem
-
 NODE_NAME="$(hostname)"
 logger "Node name: $NODE_NAME"
 

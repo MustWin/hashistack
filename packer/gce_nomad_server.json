@@ -58,8 +58,9 @@
         "sh /ops/{{user `scripts_dir`}}/consul.sh {{user `config_dir`}}",
         "sh /ops/{{user `scripts_dir`}}/nomad.sh {{user `config_dir`}}",
         "sh /ops/{{user `scripts_dir`}}/nomad_server.sh {{user `config_dir`}}",
+        "sh /ops/{{user `scripts_dir`}}/consul_template.sh {{user `config_dir`}}",
+        "sh /ops/{{user `scripts_dir`}}/haproxy.sh {{user `config_dir`}}",
         "sh /ops/{{user `scripts_dir`}}/dnsmasq.sh {{user `dns_listen_addr`}}",
-        "sh /ops/{{user `scripts_dir`}}/results.sh",
         "sh /ops/{{user `scripts_dir`}}/cleanup.sh"
       ]
     }

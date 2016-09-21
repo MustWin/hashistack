@@ -1,4 +1,4 @@
-description "Nomad agent"
+description "haproxy server"
 
 start on runlevel [2345]
 stop on runlevel [!2345]
@@ -12,7 +12,7 @@ nice -10
 limit nofile 65535 65535
 
 pre-start script
-  while [ ! -f /etc/nomad.d/configured ]
+  while [ ! -f /etc/consul-template.d/consul-template.hcl ]
   do
     DT=$(date '+%Y/%m/%d %H:%M:%S')
     echo "$DT: Waiting on configuration"
@@ -21,12 +21,9 @@ pre-start script
 end script
 
 script
-  if [ -f "/etc/service/nomad" ]; then
-    . /etc/service/nomad
+  if [ -f "/etc/service/consul-template" ]; then
+    . /etc/service/consul-template
   fi
 
-  exec /usr/local/bin/nomad agent -config="/etc/nomad.d" \$${NOMAD_FLAGS} >>/var/log/nomad.log 2>&1
-end script
-
-post-start script
+  exec /usr/local/bin/consul-template --config /etc/consul-template.d/consul-template.hcl >>/var/log/consul-template.log 2>&1
 end script

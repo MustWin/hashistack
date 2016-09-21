@@ -92,7 +92,7 @@ output "region"   { value = "${var.region}" }
 output "network"  { value = "${module.network.name}" }
 output "vpc_cidr" { value = "${module.network.vpc_cidr}" }
 
-
+/*
 output "info" {
   value = <<INFO
 
@@ -131,3 +131,4 @@ consul dns:
 INFO
 
 }
+*/

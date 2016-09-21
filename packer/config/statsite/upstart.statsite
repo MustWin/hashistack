@@ -29,5 +29,4 @@ script
 end script
 
 post-start script
-  echo "statsite,$(hostname),$(date '+%s')" | sudo tee -a /home/ubuntu/c1m/spawn/spawn.csv
 end script

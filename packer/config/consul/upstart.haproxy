@@ -1,0 +1,34 @@
+description "haproxy server"
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+# Respawn infinitely
+respawn limit unlimited
+
+console log
+
+nice -10
+limit nofile 65535 65535
+
+pre-start script
+  # The default config has no listen line
+  grep listen /etc/haproxy/haproxy.cfg
+  retval=$?
+  while [ $retval -ne 0 ]
+  do
+    DT=$(date '+%Y/%m/%d %H:%M:%S')
+    echo "$DT: Waiting on configuration"
+    sleep 1
+    grep listen /etc/haproxy/haproxy.cfg
+    retval=$?
+  done
+end script
+
+script
+  if [ -f "/etc/service/haproxy" ]; then
+    . /etc/service/haproxy
+  fi
+
+  exec /usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg  >>/var/log/haproxy.log 2>&1
+end script

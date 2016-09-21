@@ -50,7 +50,7 @@ module "consul_servers" {
   private_key       = "${var.private_key}"
 }
 
-
+/*
 module "utility" {
   source = "./utility"
 
@@ -68,8 +68,6 @@ module "utility" {
   private_key     = "${var.private_key}"
   consul_servers  = "${module.consul_servers.private_ips}"
 }
-
-
 
 module "nomad_servers" {
   source = "./nomad_server"
@@ -90,7 +88,10 @@ module "nomad_servers" {
   private_key     = "${var.private_key}"
   consul_servers  = "${module.consul_servers.private_ips}"
 }
-/* // Raw Nodes
+*/
+
+/*
+// Raw Nodes
 module "nomad_client" {
   source = "./nomad_client"
 
@@ -114,6 +115,7 @@ module "nomad_client" {
 }
 */
 
+/*
 // IGM Nodes
 module "nomad_clients_igm" {
   source = "./nomad_client_igm"
@@ -136,7 +138,8 @@ module "nomad_clients_igm" {
   private_key       = "${var.private_key}"
   consul_servers    = "${module.consul_servers.private_ips}"
 }
-
+*/
+/*
 output "utility_name"         { value = "${module.utility.name}" }
 output "utility_machine_type" { value = "${module.utility.machine_type}" }
 output "utility_private_ip"   { value = "${module.utility.private_ip}" }
@@ -151,3 +154,4 @@ output "nomad_server_names"         { value = "${module.nomad_servers.names}" }
 output "nomad_server_machine_types" { value = "${module.nomad_servers.machine_types}" }
 output "nomad_server_private_ips"   { value = "${module.nomad_servers.private_ips}" }
 output "nomad_server_public_ips"    { value = "${module.nomad_servers.public_ips}" }
+*/
