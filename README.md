@@ -17,13 +17,13 @@ Name them `gce-credentials.json` and put them in this folder
 ### Build the packer images
 ```
 export GCE_PROJECT_ID=YOUR_GOOGLE_PROJECT_ID
-export GCE_DEFAULT_ZONE=us-central1-a
+export GCE_DEFAULT_ZONE=us-central1-b
 export GCE_SOURCE_IMAGE=ubuntu-1404-trusty-v20160114e
 
 packer build packer/gce_consul_server.json
 packer build packer/gce_nomad_server.json
 packer build packer/gce_nomad_client.json
-packer build packer/gce_nomad_utility.json
+packer build packer/gce_utility.json
 ```
 
 ### Fill in the version numbers from your build images in your .tfvars file
