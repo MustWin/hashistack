@@ -24,6 +24,13 @@ variable "consul_server_artifact_version" { default = "latest" }
 variable "consul_server_machine"          { }
 variable "consul_server_disk"             { }
 variable "consul_servers"                 { }
+variable "consul_server_encrypt_key"      { }
+
+variable "vault_server_artifact_name"      { }
+variable "vault_server_artifact_version"   { default = "latest" }
+variable "vault_server_machine"            { }
+variable "vault_server_disk"               { }
+variable "vault_servers"                   { }
 
 variable "nomad_server_artifact_name"    { }
 variable "nomad_server_artifact_version" { default = "latest" }
@@ -71,10 +78,16 @@ module "compute" {
   utility_machine = "${var.utility_machine}"
   utility_disk    = "${var.utility_disk}"
 
-  consul_server_image   = "${var.artifact_prefix}-${var.consul_server_artifact_name}-${var.consul_server_artifact_version}"
-  consul_server_machine = "${var.consul_server_machine}"
-  consul_server_disk    = "${var.consul_server_disk}"
-  consul_servers        = "${var.consul_servers}"
+  consul_server_image       = "${var.artifact_prefix}-${var.consul_server_artifact_name}-${var.consul_server_artifact_version}"
+  consul_server_machine     = "${var.consul_server_machine}"
+  consul_server_disk        = "${var.consul_server_disk}"
+  consul_servers            = "${var.consul_servers}"
+  consul_server_encrypt_key = "${var.consul_server_encrypt_key}"
+
+  vault_server_image   = "${var.artifact_prefix}-${var.vault_server_artifact_name}-${var.vault_server_artifact_version}"
+  vault_server_machine = "${var.vault_server_machine}"
+  vault_server_disk    = "${var.vault_server_disk}"
+  vault_servers        = "${var.vault_servers}"
 
   nomad_server_image   = "${var.artifact_prefix}-${var.nomad_server_artifact_name}-${var.nomad_server_artifact_version}"
   nomad_server_machine = "${var.nomad_server_machine}"

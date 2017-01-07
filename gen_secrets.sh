@@ -86,7 +86,15 @@ cp vault.crt ../packer/config/vault/
 cp root.crt ../packer/config/vault/
 
 echo "==========================================================="
-echo "====  Generating the Consul secrets"
+echo "====  Copy tfvars.template"
+echo "==========================================================="
+find ../terraform/_env -name '*.tfvars.template' -print0 |
+while IFS= read -r -d $'\0' line; do
+    cp $line $(dirname $line)/terraform.tfvars
+done
+
+echo "==========================================================="
+echo "====  Fill in Consul secrets"
 echo "==========================================================="
 SECRET=`dd if=/dev/urandom bs=1 count=16 2>/dev/null | openssl base64`
-find ../terraform/_env -type f -name '*.tf' -print0 | xargs -0 sed -i '.bak' 's/CONSUL_SERVER_ENCRYPT_KEY/$SECRET/g'
+find ../terraform/_env -type f -name '*.tfvars' -print0 | xargs -0 sed -i '.bak' "s/CONSUL_SERVER_ENCRYPT_KEY/$SECRET/g"

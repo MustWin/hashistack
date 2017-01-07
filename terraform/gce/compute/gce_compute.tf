@@ -15,10 +15,11 @@ variable "utility_image"   { }
 variable "utility_machine" { }
 variable "utility_disk"    { }
 
-variable "consul_server_image"   { }
-variable "consul_server_machine" { }
-variable "consul_server_disk"    { }
-variable "consul_servers"        { }
+variable "consul_server_image"       { }
+variable "consul_server_machine"     { }
+variable "consul_server_disk"        { }
+variable "consul_servers"            { }
+variable "consul_server_encrypt_key" { }
 
 variable "nomad_server_image"   { }
 variable "nomad_server_machine" { }
@@ -31,6 +32,10 @@ variable "nomad_client_disk"    { }
 variable "nomad_client_groups"  { }
 variable "nomad_clients"        { }
 
+variable "vault_server_image"   { }
+variable "vault_server_machine" { }
+variable "vault_server_disk"    { }
+variable "vault_servers"        { }
 
 module "consul_servers" {
   source = "./consul_server"
@@ -111,6 +116,28 @@ module "nomad_client" {
   private_key     = "${var.private_key}"
   consul_servers  = "${module.consul_servers.private_ips}"
 }
+
+module "vault_servers" {
+  source = "./vault_server"
+
+  name              = "${var.name}-vault-server"
+  project_id        = "${var.project_id}"
+  credentials       = "${var.credentials}"
+  region            = "${var.region}"
+  network           = "${var.network}"
+  zones             = "${var.zones}"
+  image             = "${var.vault_server_image}"
+  machine_type      = "${var.vault_server_machine}"
+  disk_size         = "${var.vault_server_disk}"
+  servers           = "${var.vault_servers}"
+  consul_log_level  = "${var.consul_log_level}"
+  ssh_keys        = "${var.ssh_keys}"
+  private_key     = "${var.private_key}"
+  consul_servers  = "${module.consul_servers.private_ips}"
+  consul_server_encrypt_key = "${var.consul_server_encrypt_key}"
+}
+
+
 
 /*
 // IGM Nodes

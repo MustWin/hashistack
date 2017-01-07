@@ -12,13 +12,17 @@ node_classes     = "5" # Number of node_classes we will be using for the challen
 
 artifact_prefix                = "packer"
 utility_artifact_name          = "c1m-utility"
-utility_artifact_version       = "1474225767"
+utility_artifact_version       = "1474481298"
 consul_server_artifact_name    = "c1m-consul-server"
-consul_server_artifact_version = "1474259863"
+consul_server_artifact_version = "1483745969"
 nomad_server_artifact_name     = "c1m-nomad-server"
-nomad_server_artifact_version  = "1474226344"
+nomad_server_artifact_version  = "1483754127"
 nomad_client_artifact_name     = "c1m-nomad-client"
-nomad_client_artifact_version  = "1474226326"
+nomad_client_artifact_version  = "1483754133"
+vault_server_artifact_name     = "c1m-vault-client"
+vault_server_artifact_version  = "1483758641"
+
+consul_server_encrypt_key      = "CONSUL_SERVER_ENCRYPT_KEY"
 
 us_central1_cidr  = "10.140.0.0/16"
 us_central1_zones = "us-central1-b" # ,us-central1-c,us-central1-f" # us-central1-a doesn't have n1_standard_32
@@ -31,6 +35,9 @@ utility_disk          = "50" # In GB
 consul_server_machine = "n1-standard-2" # "n1-standard-32"
 consul_server_disk    = "10" # In GB
 consul_servers        = "3"
+vault_server_machine = "n1-standard-1" # "n1-standard-32"
+vault_server_disk    = "10" # In GB
+vault_servers        = "2"
 nomad_server_machine  = "n1-standard-2" # "n1-standard-32"
 nomad_server_disk     = "500" # In GB
 nomad_servers         = "3"

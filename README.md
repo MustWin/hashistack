@@ -7,12 +7,11 @@
 ```
 # Fill out prompts for your root certificate and a vault certificate
 ./gen_secrets.sh
+# This also copies tfvars files from our templates and generates secrets for consul. Once the tfvars files are created, you can modify them directly if needed to customize your deployment
 ```
 
 ### Download google cloud credentials
 Name them `gce-credentials.json` and put them in this folder
-
-### Make copies of any relevant .template files, change any `CHANGEME` text
 
 ### Build the packer images
 ```

@@ -14,10 +14,13 @@ variable "utility_artifact_name"          { }
 variable "utility_artifact_version"       { default = "latest" }
 variable "consul_server_artifact_name"    { }
 variable "consul_server_artifact_version" { default = "latest" }
+variable "consul_server_encrypt_key"      { }
 variable "nomad_server_artifact_name"     { }
 variable "nomad_server_artifact_version"  { default = "latest" }
 variable "nomad_client_artifact_name"     { }
 variable "nomad_client_artifact_version"  { default = "latest" }
+variable "vault_server_artifact_name"     { }
+variable "vault_server_artifact_version"  { default = "latest" }
 
 variable "us_central1_region"     { default = "us-central1" }
 variable "us_central1_cidr"       { default = "10.139.0.0/16" }
@@ -35,6 +38,9 @@ variable "nomad_client_machine"   { default = "n1-standard-8" }
 variable "nomad_client_disk"      { default = "20" }
 variable "nomad_client_groups"    { default = "10" }
 variable "nomad_clients"          { default = "5000" }
+variable "vault_server_machine"   { default = "n1-standard-1" }
+variable "vault_server_disk"      { default = "10" }
+variable "vault_servers"          { default = "2" }
 
 provider "google" {
   region = "${var.region}"
@@ -70,6 +76,7 @@ module "us_central1" {
   consul_server_machine          = "${var.consul_server_machine}"
   consul_server_disk             = "${var.consul_server_disk}"
   consul_servers                 = "${var.consul_servers}"
+  consul_server_encrypt_key      = "${var.consul_server_encrypt_key}"
 
   nomad_server_artifact_name    = "${var.nomad_server_artifact_name}"
   nomad_server_artifact_version = "${var.nomad_server_artifact_version}"
@@ -83,6 +90,12 @@ module "us_central1" {
   nomad_client_disk             = "${var.nomad_client_disk}"
   nomad_client_groups           = "${var.nomad_client_groups}"
   nomad_clients                 = "${var.nomad_clients}"
+
+  vault_server_artifact_name    = "${var.vault_server_artifact_name}"
+  vault_server_artifact_version = "${var.vault_server_artifact_version}"
+  vault_server_machine          = "${var.vault_server_machine}"
+  vault_server_disk             = "${var.vault_server_disk}"
+  vault_servers                 = "${var.vault_servers}"
 }
 
 //  output "us_central1_info" { value = "${module.us_central1.info}" }
