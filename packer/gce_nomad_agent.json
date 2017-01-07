@@ -4,11 +4,11 @@
     "gce_zone":         "{{env `GCE_DEFAULT_ZONE`}}",
     "gce_source_image": "{{env `GCE_SOURCE_IMAGE`}}",
     "gce_account_file": "gce-credentials.json",
-    "name":             "c1m-consul-server",
+    "name":             "c1m-nomad-client",
     "scripts_dir":      "packer/scripts",
     "config_dir":       "packer/config",
     "ssh_username":     "ubuntu",
-    "dns_listen_addr":  "0.0.0.0"
+    "dns_listen_addr":  "127.0.0.1"
   },
   "builders": [
     {
@@ -53,7 +53,7 @@
       "execute_command": "echo {{user `ssh_username`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "inline": [
         "sh /ops/{{user `scripts_dir`}}/shared.sh {{user `config_dir`}} {{user `dns_listen_addr`}}",
-        "sh /ops/{{user `scripts_dir`}}/consul_server.sh {{user `config_dir`}}",
+        "sh /ops/{{user `scripts_dir`}}/nomad_agent.sh {{user `config_dir`}} {{user `ssh_username`}}",
         "sh /ops/{{user `scripts_dir`}}/shared/cleanup.sh"
       ]
     }

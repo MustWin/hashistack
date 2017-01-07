@@ -4,6 +4,11 @@
   "bootstrap_expect": {{ bootstrap_expect }},
   "statsite_addr": "statsite.service.consul:8125",
   "statsite_prefix": "consul.consul_server",
+  "ca_file": "/etc/consul.d/ssl/root.crt",
+  "cert_file": "/etc/consul.d/ssl/consul.crt",
+  "key_file": "/etc/consul.d/ssl/consul.key",
+  "verify_incoming": true,
+  "verify_outgoing": true,
   "service": {
     "name": "consul-server",
     "tags": ["{{ tags }}"]

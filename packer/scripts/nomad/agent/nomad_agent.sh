@@ -3,7 +3,7 @@ set -e
 
 logger() {
   DT=$(date '+%Y/%m/%d %H:%M:%S')
-  echo "$DT nomad_client.sh: $1"
+  echo "$DT nomad_agent.sh: $1"
 }
 
 logger "Executing"
@@ -25,7 +25,7 @@ ORGPATH=$GOSRC/github.com/$ORG
 REPOPATH=$ORGPATH/$REPO/schedbench
 
 logger "Pulling $ORG/$REPO repo"
-sh /ops/packer/scripts/git_repo.sh $ORG $REPO $CHECKOUT
+sh $(dirname $0)/git_repo.sh $ORG $REPO $CHECKOUT
 
 logger "Building $REPO binaries in $REPOPATH/bin"
 cd ${REPOPATH}/tests/nomad

@@ -5,6 +5,13 @@ terraform.tfvars
 terraform.tfstate
 terraform.tfstate.backup
 .terraform
-gce_googlecompute.pem 
+gce_googlecompute.pem
 .DS_Store
 gce-creds.tar.gz
+credentials
+*.key
+*.cert
+*.crt
+.idea
+*.bak
+backup

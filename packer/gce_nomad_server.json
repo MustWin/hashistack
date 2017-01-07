@@ -52,16 +52,9 @@
       "type": "shell",
       "execute_command": "echo {{user `ssh_username`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "inline": [
-        "sh /ops/{{user `scripts_dir`}}/dependencies.sh",
-        "sh /ops/{{user `scripts_dir`}}/go.sh",
-        "sh /ops/{{user `scripts_dir`}}/collectd.sh",
-        "sh /ops/{{user `scripts_dir`}}/consul.sh {{user `config_dir`}}",
-        "sh /ops/{{user `scripts_dir`}}/nomad.sh {{user `config_dir`}}",
+        "sh /ops/{{user `scripts_dir`}}/shared.sh {{user `config_dir`}} {{user `dns_listen_addr`}}",
         "sh /ops/{{user `scripts_dir`}}/nomad_server.sh {{user `config_dir`}}",
-        "sh /ops/{{user `scripts_dir`}}/consul_template.sh {{user `config_dir`}}",
-        "sh /ops/{{user `scripts_dir`}}/haproxy.sh {{user `config_dir`}}",
-        "sh /ops/{{user `scripts_dir`}}/dnsmasq.sh {{user `dns_listen_addr`}}",
-        "sh /ops/{{user `scripts_dir`}}/cleanup.sh"
+        "sh /ops/{{user `scripts_dir`}}/shared/cleanup.sh"
       ]
     }
   ]

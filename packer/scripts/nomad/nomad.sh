@@ -6,6 +6,24 @@ logger() {
   echo "$DT nomad.sh: $1"
 }
 
+# For some reason, fetching nomad fails the first time around, so we retry
+retry() {
+  local n=1
+  local max=5
+  local delay=15
+  while true; do
+    "$@" && break || {
+      if [ $n -lt $max ]; then
+        n=$((n+1))
+        # No output on failure to allow redirecting output
+        sleep $delay;
+      else
+        fail "The command has failed after $n attempts."
+      fi
+    }
+  done
+}
+
 logger "Executing"
 
 cd /tmp
@@ -17,7 +35,7 @@ NOMADCONFIGDIR=/etc/nomad.d
 NOMADDIR=/opt/nomad
 
 logger "Fetching Nomad"
-curl -L $NOMADDOWNLOAD > nomad.zip
+retry curl -L $NOMADDOWNLOAD > nomad.zip
 
 logger "Installing Nomad"
 unzip nomad.zip -d /usr/local/bin
@@ -29,7 +47,7 @@ mkdir -p "$NOMADCONFIGDIR"
 chmod 0755 $NOMADCONFIGDIR
 mkdir -p "$NOMADDIR"
 chmod 0777 $NOMADDIR
-mkdir "$NOMADDIR/data"
+mkdir -p "$NOMADDIR/data"
 
 # Nomad config
 cp $CONFIGDIR/default.hcl $NOMADCONFIGDIR/.

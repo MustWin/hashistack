@@ -26,13 +26,16 @@ chmod 0755 /usr/local/bin/consul
 chown root:root /usr/local/bin/consul
 
 logger "Configuring Consul"
-mkdir -p "$CONSULCONFIGDIR"
-chmod 0755 $CONSULCONFIGDIR
+mkdir -p "$CONSULCONFIGDIR"/ssl
+chmod -R 0755 $CONSULCONFIGDIR
 mkdir -p "$CONSULDIR"
 chmod 0755 $CONSULDIR
 
 # Consul config
 cp $CONFIGDIR/default.json $CONSULCONFIGDIR/.
+cp $CONFIGDIR/root.crt $CONSULCONFIGDIR/ssl/
+cp $CONFIGDIR/consul.crt $CONSULCONFIGDIR/ssl/
+cp $CONFIGDIR/consul.key $CONSULCONFIGDIR/ssl/
 
 # Upstart config
 cp $CONFIGDIR/upstart.consul /etc/init/consul.conf

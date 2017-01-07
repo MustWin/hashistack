@@ -4,7 +4,7 @@
     "gce_zone":         "{{env `GCE_DEFAULT_ZONE`}}",
     "gce_source_image": "{{env `GCE_SOURCE_IMAGE`}}",
     "gce_account_file": "gce-credentials.json",
-    "name":             "c1m-nomad-client",
+    "name":             "c1m-vault-server",
     "scripts_dir":      "packer/scripts",
     "config_dir":       "packer/config",
     "ssh_username":     "ubuntu",
@@ -52,18 +52,9 @@
       "type": "shell",
       "execute_command": "echo {{user `ssh_username`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "inline": [
-        "sh /ops/{{user `scripts_dir`}}/dependencies.sh",
-        "sh /ops/{{user `scripts_dir`}}/java8.sh",
-        "sh /ops/{{user `scripts_dir`}}/go.sh",
-        "sh /ops/{{user `scripts_dir`}}/collectd.sh",
-        "sh /ops/{{user `scripts_dir`}}/docker.sh {{user `ssh_username`}}",
-        "sh /ops/{{user `scripts_dir`}}/consul.sh {{user `config_dir`}}",
-        "sh /ops/{{user `scripts_dir`}}/nomad.sh {{user `config_dir`}}",
-        "sh /ops/{{user `scripts_dir`}}/nomad_client.sh {{user `config_dir`}}",
-        "sh /ops/{{user `scripts_dir`}}/consul_template.sh {{user `config_dir`}}",
-        "sh /ops/{{user `scripts_dir`}}/haproxy.sh {{user `config_dir`}}",
-        "sh /ops/{{user `scripts_dir`}}/dnsmasq.sh {{user `dns_listen_addr`}}",
-        "sh /ops/{{user `scripts_dir`}}/cleanup.sh"
+        "sh /ops/{{user `scripts_dir`}}/shared.sh {{user `config_dir`}} {{user `dns_listen_addr`}}",
+        "sh /ops/{{user `scripts_dir`}}/vault_server.sh {{user `config_dir`}}",
+        "sh /ops/{{user `scripts_dir`}}/shared/cleanup.sh"
       ]
     }
   ]

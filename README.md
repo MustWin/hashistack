@@ -5,8 +5,8 @@
 
 ### Generate some keys for your deployment
 ```
-# When prompted, put them in this directory and name the private key id_rsa and the public key id_rsa.pub
-ssh-keygen -t rsa -b 2048
+# Fill out prompts for your root certificate and a vault certificate
+./gen_secrets.sh
 ```
 
 ### Download google cloud credentials
@@ -21,6 +21,7 @@ export GCE_DEFAULT_ZONE=us-central1-b
 export GCE_SOURCE_IMAGE=ubuntu-1404-trusty-v20160114e
 
 packer build packer/gce_consul_server.json
+packer build packer/gce_vault_server.json
 packer build packer/gce_nomad_server.json
 packer build packer/gce_nomad_client.json
 packer build packer/gce_utility.json
