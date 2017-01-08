@@ -17,6 +17,7 @@ variable "consul_log_level"  { }
 variable "ssh_keys"   { }
 variable "private_key"  { }
 variable "consul_servers"    { }
+variable "consul_server_encrypt_key" { }
 
 provider "google" {
   region      = "${var.region}"
@@ -53,6 +54,7 @@ resource "template_file" "nomad_client" {
     consul_log_level  = "${var.consul_log_level}"
     local_ip_url      = "-H \"Metadata-Flavor: Google\" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip"
     consul_join_script = "${module.consul_cluster_join_template.script}"
+    consul_server_encrypt_key = "${var.consul_server_encrypt_key}"
   }
 }
 output "script" { value = "${template_file.nomad_client.rendered}" }

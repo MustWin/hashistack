@@ -28,6 +28,7 @@ sudo sed -i -- "s/{{ local_ip }}/$METADATA_LOCAL_IP/g" $CONSUL_DEFAULT_CONFIG
 sudo sed -i -- "s/{{ datacenter }}/${datacenter}/g" $CONSUL_DEFAULT_CONFIG
 sudo sed -i -- "s/{{ node_name }}/$NODE_NAME/g" $CONSUL_DEFAULT_CONFIG
 sudo sed -i -- "s/{{ log_level }}/${consul_log_level}/g" $CONSUL_DEFAULT_CONFIG
+sudo sed -i -- "s/{{ consul_server_encrypt_key }}/${consul_server_encrypt_key}/g" $CONSUL_DEFAULT_CONFIG
 
 logger "Configuring Consul Nomad server"
 CONSUL_NOMAD_SERVER_CONFIG=/etc/consul.d/nomad_server.json

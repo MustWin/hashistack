@@ -34,6 +34,12 @@ You'll need to swap the version numbers in your `terraform/_env/gce/terraform.tf
 
 `cd terraform/_env/gce; terraform apply`
 
+### Initialize Vault
+cd vault;
+VAULT_SERVER=ip.ad.dr.ess ./init.sh # This stores your keys in the credentials folder. Separate them and be careful with them.
+VAULT_SERVER=ip.ad.dr.ess ./unseal.sh
+VAULT_SERVER=ip.ad.dr.ess2 ./unseal.sh
+
 ### Launch nomad tasks
 
 `cd nomad; NOMAD_SERVER=ip.ad.dr.ess ./run_job.sh helloworld.nomad`

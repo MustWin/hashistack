@@ -53,6 +53,7 @@ module "consul_servers" {
   consul_log_level  = "${var.consul_log_level}"
   ssh_keys          = "${var.ssh_keys}"
   private_key       = "${var.private_key}"
+  consul_server_encrypt_key = "${var.consul_server_encrypt_key}"
 }
 
 module "utility" {
@@ -71,6 +72,7 @@ module "utility" {
   ssh_keys        = "${var.ssh_keys}"
   private_key     = "${var.private_key}"
   consul_servers  = "${module.consul_servers.private_ips}"
+  consul_server_encrypt_key = "${var.consul_server_encrypt_key}"
 }
 
 module "nomad_servers" {
@@ -91,6 +93,7 @@ module "nomad_servers" {
   ssh_keys        = "${var.ssh_keys}"
   private_key     = "${var.private_key}"
   consul_servers  = "${module.consul_servers.private_ips}"
+  consul_server_encrypt_key = "${var.consul_server_encrypt_key}"
 }
 
 
@@ -115,6 +118,7 @@ module "nomad_client" {
   ssh_keys        = "${var.ssh_keys}"
   private_key     = "${var.private_key}"
   consul_servers  = "${module.consul_servers.private_ips}"
+  consul_server_encrypt_key = "${var.consul_server_encrypt_key}"
 }
 
 module "vault_servers" {

@@ -43,6 +43,7 @@ resource "template_file" "vault_server" {
     machine_type      = "${var.machine_type}"
     consul_log_level  = "${var.consul_log_level}"
     local_ip_url      = "-H \"Metadata-Flavor: Google\" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip"
+    consul_server_encrypt_key = "${var.consul_server_encrypt_key}"
   }
 }
 

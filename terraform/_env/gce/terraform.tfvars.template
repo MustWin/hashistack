@@ -19,7 +19,7 @@ nomad_server_artifact_name     = "c1m-nomad-server"
 nomad_server_artifact_version  = "1483754127"
 nomad_client_artifact_name     = "c1m-nomad-client"
 nomad_client_artifact_version  = "1483754133"
-vault_server_artifact_name     = "c1m-vault-client"
+vault_server_artifact_name     = "c1m-vault-server"
 vault_server_artifact_version  = "1483758641"
 
 consul_server_encrypt_key      = "CONSUL_SERVER_ENCRYPT_KEY"

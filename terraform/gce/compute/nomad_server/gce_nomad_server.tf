@@ -16,6 +16,7 @@ variable "consul_log_level"  { }
 variable "ssh_keys"   { }
 variable "private_key"  { }
 variable "consul_servers"    { }
+variable "consul_server_encrypt_key" { }
 
 provider "google" {
   region      = "${var.region}"

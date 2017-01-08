@@ -15,7 +15,7 @@ consul join ${consul_servers}
 retval=$?
 SLEEPTIME=1
 while [ $retval -ne 0 ]; do
-    if [ $SLEEPTIME -gt 15 ]; then
+    if [ $SLEEPTIME -gt 25 ]; then
       logger "ERROR: CONSUL SETUP NOT COMPLETE! Couldn't execute `join` Manual intervention required."
       exit $retval
     else

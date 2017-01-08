@@ -1,4 +1,5 @@
 backend "consul" {
+  cluster_name = "vault"
   address = "127.0.0.1:8500"
   path = "vault"
   tls_ca_file = "/etc/consul.d/ssl/root.crt"
@@ -17,5 +18,3 @@ telemetry {
   statsite_address = "127.0.0.1:8125"
   disable_hostname = true
 }
-
-cluster_name "vault"
