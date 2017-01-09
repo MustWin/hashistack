@@ -2,8 +2,8 @@ name              = "c1m"
 region            = "us-central1"
 project_id        = "nomadspark-143720" // CHANGEME
 credentials_file  = "../../../gce-credentials.json" # GCE account credentials
-public_key_file   = "../../../id_rsa.pub" # Added to all GCE instances and must be prefixed by the user ID which is allowed
-private_key_file  = "../../../id_rsa"
+public_key_file   = "../../../credentials/id_rsa.pub" # Added to all GCE instances and must be prefixed by the user ID which is allowed
+private_key_file  = "../../../credentials/id_rsa"
 
 artifact_type    = "google.image"
 consul_log_level = "INFO"

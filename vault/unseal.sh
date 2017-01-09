@@ -1,4 +1,5 @@
 #!/bin/bash
+: ${VAULT_SERVER?"Need to set VAULT_SERVER"}
 set -e
 
 IFS=$'\n'

@@ -12,7 +12,7 @@ cat <<EOF
 We are creating 3 certificates:
 1) a root certificate. Use a wildcard for the FQDN, e.g. *.example.com
 2) a Consul certificate for encrypting consul communication.
-3) a Vault certificate for issuing other certificates.
+3) a Vault certificate for issuing other certificates. This should be the same wildcard domain as the root cert
 Please fill out the prompts for each and maintain the secrecy of your root keys!!
 EOF
 echo "==========================================================="
@@ -53,11 +53,11 @@ organizationName = supplied
 organizationalUnitName = optional
 
 [ myca_extensions ]
-basicConstraints = CA:false
+basicConstraints = CA:TRUE
 subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid:always
 subjectAltName = IP:127.0.0.1,DNS:vault.service.consul
-keyUsage = digitalSignature,keyEncipherment
+keyUsage = digitalSignature,keyEncipherment,dataEncipherment,nonRepudiation,cRLSign,keyCertSign
 extendedKeyUsage = serverAuth,clientAuth
 EOF
 
@@ -70,7 +70,7 @@ openssl req -newkey rsa:2048 -nodes -out consul.csr -keyout consul.key
 openssl ca -batch -config vault-ca.conf -notext -in consul.csr -out consul.crt
 
 echo "==========================================================="
-echo "====  Generating the Vault certificate"
+echo "====  Generating the Vault certificate. Use the same wildcard domain as the root cert."
 echo "==========================================================="
 # Generate a cert signing request and key
 openssl req -newkey rsa:2048 -nodes -out vault.csr -keyout vault.key
@@ -97,4 +97,4 @@ echo "==========================================================="
 echo "====  Fill in Consul secrets"
 echo "==========================================================="
 SECRET=`dd if=/dev/urandom bs=1 count=16 2>/dev/null | openssl base64`
-find ../terraform/_env -type f -name '*.tfvars' -print0 | xargs -0 sed -i '.bak' "s/CONSUL_SERVER_ENCRYPT_KEY/$SECRET/g"
+find ../terraform/_env -type f -name '*.tfvars' -print0 | xargs -0 sed -i '.bak' "s#CONSUL_SERVER_ENCRYPT_KEY#$SECRET#g"
